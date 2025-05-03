@@ -24,21 +24,26 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running pytest...'
-                sh '. $VENV_DIR/bin/activate && pytest tests/'
+                sh '''
+                    . $VENV_DIR/bin/activate
+                    export PYTHONPATH=.
+                    pytest tests/
+                '''
             }
         }
 
-        stage('Test') {
-    steps {
-        echo 'Running pytest...'
-        sh '''
-            . .venv/bin/activate
-            export PYTHONPATH=.
-            pytest tests/
-        '''
+        stage('Coverage Report') {
+            steps {
+                echo 'Generating coverage report...'
+                sh '''
+                    . $VENV_DIR/bin/activate
+                    export PYTHONPATH=.
+                    coverage run -m pytest tests/
+                    coverage report
+                '''
+            }
+        }
     }
-}
-
 
     post {
         always {
