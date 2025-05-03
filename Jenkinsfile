@@ -28,15 +28,17 @@ pipeline {
             }
         }
 
-        stage('Coverage Report') {
-            steps {
-                echo 'Generating code coverage report...'
-                sh '. $VENV_DIR/bin/activate && coverage run -m pytest tests/'
-                sh '. $VENV_DIR/bin/activate && coverage report'
-                sh '. $VENV_DIR/bin/activate && coverage html'
-            }
-        }
+        stage('Test') {
+    steps {
+        echo 'Running pytest...'
+        sh '''
+            . .venv/bin/activate
+            export PYTHONPATH=.
+            pytest tests/
+        '''
     }
+}
+
 
     post {
         always {
